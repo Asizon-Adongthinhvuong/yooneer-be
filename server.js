@@ -4,7 +4,8 @@ const express = require("express");
 const connectDB = require("./src/config/db");
 const authRoutes = require('./src/routes/authRoutes');
 const categoryRoutes = require('./src/routes/categoryRoutes');
-const courses = require("./src/data/courses");
+const path = require("path");
+const courses = require("./src/routes/courseRoutes");
 require("dotenv").config();
 console.log("🔍 MONGODB_URL:", process.env.MONGODB_URL);
 connectDB();
@@ -15,6 +16,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 
 app.get("/", (_req, res) => {
@@ -22,9 +24,7 @@ app.get("/", (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.get("/api/courses", (_req, res) => {
-  res.json(courses);
-});
+app.use("/api/courses", courses);
 app.use("/api/categories", categoryRoutes);
 // Chạy server
 const PORT = process.env.PORT || 5000;
